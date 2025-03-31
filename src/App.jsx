@@ -17,6 +17,8 @@ import CategoryChart from './components/CategoryChart';
 import { auth, provider } from './firebase';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import Papa from 'papaparse';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
 
 
 
@@ -44,6 +46,17 @@ function App() {
         console.error('Login error:', error);
       });
   };
+  const handleDemoLogin = () => {
+    signInWithEmailAndPassword(auth, 'demo@example.com', 'demopassword')
+      .then((result) => {
+        setUser(result.user);
+      })
+      .catch((error) => {
+        console.error('Demo login failed:', error);
+        alert('Demo 로그인 실패: ' + error.message);
+      });
+  };
+  
 
   // 4️⃣ 로그아웃 함수
   const handleLogout = () => {
@@ -158,18 +171,32 @@ function App() {
     <div>
     {/* 로그인 상태에 따라 버튼 출력 */}
     {user ? (
-      <div className="flex items-center gap-2 mb-4 px-6">
-        <span className="text-sm text-gray-600">Welcome, {user.displayName}</span>
-        <button onClick={handleLogout} className="bg-red-500 text-white px-2 py-1 rounded text-sm">Logout</button>
-      </div>
-    ) : (
-      <div className="px-6">
-        <button onClick={handleLogin} className="bg-blue-500 text-white px-4 py-2 rounded">Login with Google</button>
-      </div>
-    )}
+        <div className="flex items-center gap-2 mb-4 px-6">
+          <span className="text-sm text-gray-600">Welcome, {user.displayName}</span>
+          <button onClick={handleLogout} className="bg-red-500 text-white px-2 py-1 rounded text-sm">
+            Logout
+          </button>
+        </div>
+      ) : (
+        <div className="px-6 space-y-2">
+          <button onClick={handleLogin} className="bg-blue-500 text-white px-4 py-2 rounded w-full">
+            Login with Google
+          </button>
+          <p className="text-sm text-gray-500 text-center mb-2">
+            👥 Don’t want to sign in? Try with a demo account – no data will be saved permanently.
+          </p>
+          <button onClick={handleDemoLogin} className="bg-gray-600 text-white px-4 py-2 rounded w-full">
+            Demo Login
+          </button>
+        </div>
+      )}
+
     
     <div className="max-w-xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-bold text-center text-blue-700">Simple Cash Flow Tracker</h1>
+      <p className="text-center text-sm text-gray-600">
+        💬 Track your income and expenses easily. No signup needed – try with demo login!
+      </p>
       <input
         type="text"
         placeholder="Search transactions..."
